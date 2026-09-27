@@ -11,8 +11,9 @@ export function ProfileCard() {
     ["role", profile.headline],
     ["company", current?.company.replace(" Private Limited", "") ?? ""],
     ["experience", `${getYearsOfExperience()}+ years`],
+    ["stack", ["React.js", "React Native", "Node.js", "JavaScript", "TypeScript"]],
     ["platforms", ["web", "ios", "android"]],
-    ["realtime", ["WebRTC", "Socket.io", "SIP", "MQTT"]],
+    ["realtime", ["WebRTC", "Socket.io", "SIP", "MQTT", "NATS"]],
     ["ai", ["GenAI", "agentic"]],
   ];
 
@@ -40,16 +41,7 @@ export function ProfileCard() {
               <span className="text-muted">{key}</span>
               <span className="text-subtle">: </span>
               {Array.isArray(value) ? (
-                <>
-                  <span className="text-subtle">[</span>
-                  {value.map((v, i) => (
-                    <span key={v}>
-                      <span className="text-accent">&quot;{v}&quot;</span>
-                      {i < value.length - 1 ? <span className="text-subtle">, </span> : null}
-                    </span>
-                  ))}
-                  <span className="text-subtle">]</span>
-                </>
+                <ArrayLiteral items={value} />
               ) : (
                 <span className="text-accent">&quot;{value}&quot;</span>
               )}
@@ -61,5 +53,53 @@ export function ProfileCard() {
         </code>
       </pre>
     </figure>
+  );
+}
+
+const INLINE_MAX = 4;
+const PER_LINE = 3;
+
+/** Renders an array like a formatter would: inline when short, wrapped when long. */
+function ArrayLiteral({ items }: { items: string[] }) {
+  const item = (v: string) => <span className="text-accent">&quot;{v}&quot;</span>;
+
+  if (items.length <= INLINE_MAX) {
+    return (
+      <>
+        <span className="text-subtle">[</span>
+        {items.map((v, i) => (
+          <span key={v}>
+            {item(v)}
+            {i < items.length - 1 ? <span className="text-subtle">, </span> : null}
+          </span>
+        ))}
+        <span className="text-subtle">]</span>
+      </>
+    );
+  }
+
+  const lines: string[][] = [];
+  for (let i = 0; i < items.length; i += PER_LINE) lines.push(items.slice(i, i + PER_LINE));
+
+  return (
+    <>
+      <span className="text-subtle">[</span>
+      {"\n"}
+      {lines.map((line) => (
+        <span key={line.join()}>
+          {"    "}
+          {line.map((v, i) => (
+            <span key={v}>
+              {item(v)}
+              <span className="text-subtle">,</span>
+              {i < line.length - 1 ? " " : null}
+            </span>
+          ))}
+          {"\n"}
+        </span>
+      ))}
+      {"  "}
+      <span className="text-subtle">]</span>
+    </>
   );
 }

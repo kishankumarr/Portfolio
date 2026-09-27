@@ -89,7 +89,7 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="enter hidden min-w-0 sm:block lg:col-span-5 lg:pl-6 xl:pl-10" style={{ "--i": 4 } as React.CSSProperties}>
+        <div className="enter hidden min-w-0 sm:block lg:col-span-5 lg:pl-3 xl:pl-10" style={{ "--i": 4 } as React.CSSProperties}>
           <ProfileCard />
         </div>
       </div>
